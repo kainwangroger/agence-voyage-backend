@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: avg
+    ports:
+      - "5433:5432"
+    restart: always
+
+  mariadb:
+    image: mariadb:10.7
+    container_name: mariadb-db
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: agence
+      MARIADB_USER: root
+      MARIADB_PASSWORD: root
+    ports:
+      - "3307:3306"
+    restart: always
+
+
+  adminer:
+    image: adminer
+    container_name: adminer_ui
+    ports:
+      - "8081:8080"
+    restart: always

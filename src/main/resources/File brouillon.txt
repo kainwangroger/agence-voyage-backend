@@ -1,0 +1,202 @@
+1. Outils recommandés
+
+| Besoin                        | Outil conseillé                                                                                |
+| ----------------------------- | ---------------------------------------------------------------------------------------------- |
+| Backend Java                  | **Spring Boot** (avec Maven ou Gradle)                                                         |
+| Base de données relationnelle | **PostgreSQL** ou MySQL                                                                        |
+| IDE                           | **IntelliJ IDEA** ou **VS Code**                                                               |
+| Tests                         | JUnit / Mockito                                                                                |
+| API REST                      | Spring Web / Spring MVC                                                                        |
+| ORM                           | **Spring Data JPA + Hibernate**                                                                |
+| Authentification              | **Spring Security**                                                                            |
+| Frontend                      | - Simple : HTML/CSS/JS + Thymeleaf                <br> - Moderne : Angular / React (optionnel) |
+| Conteneurisation (optionnel)  | **Docker + docker-compose**                                                                    |
+
+
+
+2. Pages principales de l’application
+
+
+| Page                     | Fonctionnalité principale                |
+| ------------------------ | ---------------------------------------- |
+| Accueil                  | Présentation de l'agence                 |
+| Liste des voyages        | Afficher les offres disponibles          |
+| Détail d’un voyage       | Afficher infos complètes d’un voyage     |
+| Réservation              | Réserver un voyage                       |
+| Tableau de bord admin    | Gérer voyages, clients, réservations     |
+| Gestion des clients      | Ajouter / modifier / supprimer un client |
+| Gestion des destinations | CRUD sur les villes/pays                 |
+| Authentification         | Connexion / Déconnexion / Inscription    |
+| Statistiques (optionnel) | Voir nb de réservations, revenus, etc.   |
+
+
+ 3. Langages de programmation
+
+ | Type de tâche     | Langages utilisés               |
+| ----------------- | ------------------------------- |
+| Backend API       | **Java (Spring Boot)**          |
+| Base de données   | **SQL** (PostgreSQL)            |
+| Frontend (simple) | **HTML + CSS + JS + Thymeleaf** |
+| Frontend (avancé) | **Angular / React** (optionnel) |
+
+
+4. Modèle de base de données (tables)
+
+
+Voici les tables principales que tu devrais prévoir :
+
+🧳 Voyage
+        id (PK)
+
+        destination
+
+        date_depart
+
+        date_retour
+
+        prix
+
+        places_disponibles
+
+        description
+
+👤 Client
+        id (PK)
+
+        nom
+
+        prenom
+
+        email
+
+        telephone
+
+        mot_de_passe
+
+📝 Reservation
+        id (PK)
+
+        client_id (FK → Client)
+
+        voyage_id (FK → Voyage)
+
+        date_reservation
+
+        nombre_personnes
+
+        statut (en attente / confirmé / annulé)
+
+🌍 Destination (optionnel si tu veux séparer)
+        id (PK)
+
+        ville
+
+        pays
+
+🛡️ Utilisateur (si tu veux une vraie gestion des rôles/admins)
+        id
+
+        email
+
+        mot_de_passe
+
+        role (ADMIN / CLIENT)
+
+
+
+5. Exemples d’API REST
+
+
+| Méthode | URL                  | Fonction                |
+| ------- | -------------------- | ----------------------- |
+| GET     | `/api/voyages`       | Lister tous les voyages |
+| POST    | `/api/reservations`  | Réserver un voyage      |
+| GET     | `/api/clients/{id}`  | Voir profil client      |
+| POST    | `/api/auth/login`    | Connexion utilisateur   |
+| POST    | `/api/auth/register` | Créer un compte client  |
+
+
+
+6. Exemple d'architecture Spring Boot
+
+src/
+└── main/
+    └── java/
+        └── com/
+            └── monsite/
+                └── agencevoyage/
+                    ├── AgenceVoyageApplication.java   ← classe principale
+                    ├── controller/
+                    │   └── TestController.java       ← contrôleur ici !
+                    ├── model/
+                    └── service/
+
+
+
+ 7. Exemple application.properties
+
+
+ # Connexion PostgreSQL
+spring.datasource.url=jdbc:postgresql://localhost:5432/AVG
+spring.datasource.username=postgres
+spring.datasource.password=ton_mot_de_passe
+
+# JPA
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+
+Étape 3 – Créer les entités principales
+
+--- Voyage.java ---
+
+@Entity
+public class Voyage {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String destination;
+    private LocalDate dateDepart;
+    private LocalDate dateRetour;
+    private Double prix;
+    private int placesDisponibles;
+
+    @Column(length = 1000)
+    private String description;
+}
+
+
+---- Client.java ----
+
+@Entity
+public class Client {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String nom;
+    private String prenom;
+    private String email;
+    private String motDePasse;
+    private String telephone;
+}
+
+
+--- Reservation.java ----
+
+@Entity
+public class Reservation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    private Client client;
+
+    @ManyToOne
+    private Voyage voyage;
+
+    private LocalDateTime dateReservation;
+    private int nombrePersonnes;
+    private String statut; // confirmé, annulé, etc.
+}
